@@ -17,7 +17,7 @@ function App() {
                     <Route path="/404" component={NotFound} />
                     <Route path="/login" component={Login} />
                     <Route path="/users/:userId" component={Person} />
-                    <Route path="/users" component={Users} />
+                    <Route path="/users" exact component={Users} />
                     <Redirect to="/404" />
                 </Switch>
             </div>

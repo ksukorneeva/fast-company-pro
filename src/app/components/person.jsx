@@ -16,8 +16,8 @@ const Person = () => {
     };
     return (
         <div>
-            {person && (
-                <div>
+            {person ?
+                (<div>
                     <h1>{person.name}</h1>
                     <p>{`Профессия: ${person.profession.name}`}</p>
                     {person.qualities.map((qual) => (
@@ -32,8 +32,9 @@ const Person = () => {
                     >
                         Все пользователи
                     </button>
-                </div>
-            )}
+                </div>) :
+                (<h1>Loading...</h1>)
+            }
         </div>
     );
 };
