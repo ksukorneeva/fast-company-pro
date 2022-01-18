@@ -6,10 +6,7 @@ const Search = (props) => {
         props.search(target.value);
     };
     return (
-        <input
-            type="text"
-            placeholder="Search..."
-            onChange={handleSearch}/>
+        <input type="text" placeholder="Search..." onChange={handleSearch} />
     );
 };
 Search.propTypes = {

@@ -4,8 +4,14 @@ export function validator(data, config) {
         let statusValedate;
         switch (validateMethod) {
         case "isRequired":
-            statusValedate = data.trim() === "";
+        {
+            if (typeof data === "boolean") {
+                statusValedate = !data;
+            } else {
+                statusValedate = data.trim() === "";
+            }
             break;
+        }
         case "isEmail": {
             const emailRegExp = /^\S+@\S+\.\S+$/g;
             statusValedate = !emailRegExp.test(data);
@@ -39,7 +45,7 @@ export function validator(data, config) {
             );
             if (error && !errors[fieldName]) {
                 errors[fieldName] = error;
-            };
+            }
         }
     }
     return errors;

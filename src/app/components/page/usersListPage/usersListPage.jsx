@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import Pagination from "./pagination";
-import { paginate } from "../utils/paginate";
+import Pagination from "../../common/pagination";
+import { paginate } from "../../../utils/paginate";
 import PropTypes from "prop-types";
-import GroupList from "./groupList";
-import api from "../api";
-import SearchStatus from "./searchStatus";
-import UserTable from "./usersTable";
+import GroupList from "../../common/groupList";
+import api from "../../../api";
+import SearchStatus from "../../ui/searchStatus";
+import UserTable from "../../ui/usersTable";
 import _ from "lodash";
-import Search from "./search";
+import Search from "../../common/search";
 
-const Users = () => {
+const UsersListPage = () => {
     const pageSize = 4;
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfession] = useState();
@@ -51,15 +51,12 @@ const Users = () => {
     const handleProfessionSelect = (item) => {
         setSelectedProf(item);
     };
-    // const handleSearchSelect = (item) => {
-    //     setSelectedSearch(item);
-    // };
-    const search = value => {
+    const search = (value) => {
         let currentUsers = [];
         let newList = [];
         if (value !== "") {
             currentUsers = users;
-            newList = currentUsers.filter(user => {
+            newList = currentUsers.filter((user) => {
                 const lc = user.name.toLowerCase();
                 const filter = value.toLowerCase();
                 return lc.includes(filter);
@@ -87,7 +84,9 @@ const Users = () => {
             );
         } else if (selectedSearch) {
             filteredUsers = selectedSearch;
-        } else { filteredUsers = users; }
+        } else {
+            filteredUsers = users;
+        }
         const count = filteredUsers.length;
         const sortedUsers = _.orderBy(
             filteredUsers,
@@ -119,7 +118,7 @@ const Users = () => {
                 )}
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
-                    <Search {...{ search }}/>
+                    <Search {...{ search }} />
                     {count > 0 && (
                         <UserTable
                             users={userCrop}
@@ -143,9 +142,9 @@ const Users = () => {
     }
     return "loading...";
 };
-Users.propTypes = {
+UsersListPage.propTypes = {
     users: PropTypes.array,
     rest: PropTypes.array
 };
 
-export default Users;
+export default UsersListPage;
