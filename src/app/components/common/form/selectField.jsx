@@ -25,11 +25,11 @@ const SelectField = ({ label, value, onChange, defaultOption, options, error, na
                 onChange={handleChange} >
                 <option disabled value="">{defaultOption}</option>
                 {
-                    optionsArray && optionsArray.map(option => <option
+                    optionsArray && optionsArray.map(option => (<option
                         key={option.value}
                         value={option.value}>
                         {option.name}
-                    </option>)
+                    </option>))
                 }
             </select>
             {error && <div className="invalid-feedback">

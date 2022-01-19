@@ -5,10 +5,11 @@ import api from "../../api";
 import SelectField from "../common/form/selectField";
 import RadioField from "../common/form/radioField";
 import MultiSelectField from "../common/form/multiSelectField";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 // import * as yup from "yup";
 
 const EditPage = () => {
+    const history = useHistory();
     const params = useParams();
     const [user, setUser] = useState();
     const [qualities, setQualitiees] = useState({});
@@ -84,29 +85,33 @@ const EditPage = () => {
     //     return Object.keys(errors).length === 0;
     // };
     // const isValid = Object.keys(errors).length === 0;
-
     const handleSubmit = (e) => {
         e.preventDefault();
-        const raw = localStorage.getItem("users");
-        const person = JSON.parse(raw);
-        // const isValid = validate();
-        // if (!isValid) return;
-        // e.target.forEach((item))
-        for (let i = 0; i < person.length; i++) {
-            if (person[i]._id === user._id) {
-                person[i].name = e.target.name.defaultValue;
-                person[i].email = e.target.email.defaultValue;
-                person[i].profession = e.target.professions.value;
-                person[i].sex = e.target.sex.value;
-                // person[i].qualities =
-            }
-        }
-        localStorage.setItem("users", JSON.stringify(person));
-        console.log(localStorage.getItem("users"));
-        console.log(person);
-        console.log(e.target.professions.value);
-        console.log(e.target.professions.name);
-        console.log(e);
+        // const raw = localStorage.getItem("users");
+        // const person = JSON.parse(raw);
+        // // const isValid = validate();
+        // // if (!isValid) return;
+        // // e.target.forEach((item))
+        // for (let i = 0; i < person.length; i++) {
+        // if (person[i]._id === user._id) {
+        user.name = e.target.name.defaultValue;
+        user.email = e.target.email.defaultValue;
+        user.profession = e.target.professions.value;
+        user.sex = e.target.sex.value;
+        // user.qualities = e.target.qualities;
+        // user.qualities =
+        // }
+        // }
+        // localStorage.setItem("users", JSON.stringify(person));
+        // console.log(localStorage.getItem("users"));
+        // console.log(person);
+        // console.log("target", e.target.professions.value);
+        // console.log(e.target.professions.name);
+        // console.log(e);
+        // e.target.qualities.forEach(value => console.log(value.label));
+        // console.log("user", user.qualities);
+        user && api.users.update(user._id, user).then((data) => setUser(data));
+        user && history.push(`/users/${user._id}`);
     };
     if (user && professions && qualities) {
         return (
@@ -155,6 +160,7 @@ const EditPage = () => {
                                 type="submit"
                                 // disabled={!isValid}
                                 className="btn btn-primary w-100 mx-auto"
+
                             >
                                 Обновить
                             </button>
