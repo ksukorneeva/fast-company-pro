@@ -11,7 +11,7 @@ const UserPage = ({ userId }) => {
         api.users.getById(userId).then((data) => setUser(data));
     }, []);
     const handleClick = () => {
-        user && history.push(`/users/${user._id}/edit`);
+        history.push(history.location.pathname + "/edit");
     };
     if (user) {
         return (
