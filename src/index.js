@@ -6,9 +6,13 @@ import "bootstrap/dist/css/bootstrap.css";
 import App from "./app/App";
 
 ReactDOM.render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>,
+    <div className="container">
+        <div className="row gutters-sm">
+            <React.StrictMode>
+                <App />
+            </React.StrictMode>,
+        </div>
+    </div>,
     document.getElementById("root")
 );
 
