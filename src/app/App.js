@@ -13,16 +13,16 @@ function App() {
         <BrowserRouter>
             <div>
                 <NavBar />
-                <Switch>
-                    <ProfessionProvider>
-                        <QualityProvider>
-                            <Route path="/login/:type?" component={Login} />
+                <ProfessionProvider>
+                    <QualityProvider>
+                        <Switch>
                             <Route path="/users/:userId?/:edit?" component={Users} />
-                        </QualityProvider>
-                    </ProfessionProvider>
-                    <Route path="/" exact component={MainPage} />
-                    <Redirect to="/" />
-                </Switch>
+                            <Route path="/login/:type?" component={Login} />
+                            <Route path="/" exact component={MainPage} />
+                            <Redirect to="/" />
+                        </Switch>
+                    </QualityProvider>
+                </ProfessionProvider>
                 <ToastContainer/>
             </div>
         </BrowserRouter>
