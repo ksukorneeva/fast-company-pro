@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { validator } from "../../utils/validator";
 import TextField from "../common/form/textField";
-import api from "../../api";
 import SelectField from "../common/form/selectField";
 import RadioField from "../common/form/radioField";
 import MultiSelectField from "../common/form/multiSelectField";
 import CheckBoxField from "../common/form/checkBoxField";
+import { useQualities } from "../../hooks/useQualities";
+import { useProfessions } from "../../hooks/useProfession";
+import { useAuth } from "../../hooks/useAuth";
+import { useHistory } from "react-router-dom";
 
 const RegisterForm = () => {
-    const [qualities, setQualitiees] = useState({});
-    const [professions, setProfession] = useState();
+    const history = useHistory();
     const [data, setData] = useState({
         email: "",
         password: "",
@@ -18,11 +20,19 @@ const RegisterForm = () => {
         qualities: [],
         licence: false
     });
+    const { signUp } = useAuth();
+    const { qualities } = useQualities();
+    const qualitiesList = qualities.map((q) => ({
+        label: q.name,
+        value: q._id
+    }));
+    const { professions } = useProfessions();
+    const professionsList = professions.map((p) => ({
+        label: p.name,
+        value: p._id
+    }));
     const [errors, setErrors] = useState({});
-    useEffect(() => {
-        api.professions.fetchAll().then((data) => setProfession(data));
-        api.qualities.fetchAll().then((data) => setQualitiees(data));
-    }, []);
+
     const handleChange = (target) => {
         setData((prevState) => ({
             ...prevState,
@@ -32,7 +42,7 @@ const RegisterForm = () => {
     const validatorConfig = {
         email: {
             isRequired: {
-                message: "Электронная  почта обязательна для заполнения"
+                message: "Электронная почта обязательна для заполнения"
             },
             isEmail: {
                 message: "Email введен некорректно"
@@ -42,7 +52,7 @@ const RegisterForm = () => {
             isRequired: {
                 message: "Пароль обязателен для заполнения"
             },
-            isCapital: {
+            isCapitalSymbol: {
                 message: "Пароль должен содержать хотя бы одну заглавную букву"
             },
             isContainDigit: {
@@ -55,15 +65,15 @@ const RegisterForm = () => {
         },
         profession: {
             isRequired: {
-                message: "Обязательно выберете вашу профессию"
+                message: "Обязательно выберите вашу профессию"
             }
         },
         licence: {
             isRequired: {
-                message: "Вы не можете использова наш сервис без подтверждения лицензионного соглашения"
+                message:
+                    "Вы не можете использовать наш сервис без подтверждения лицензионного соглашения"
             }
         }
-
     };
     useEffect(() => {
         validate();
@@ -74,12 +84,24 @@ const RegisterForm = () => {
         return Object.keys(errors).length === 0;
     };
     const isValid = Object.keys(errors).length === 0;
-    const handleSubmit = (e) => {
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
-        console.log(e);
+        const newData = {
+            ...data,
+            qualities: data.qualities.map((q) => q.value)
+        };
+
+        try {
+            await signUp(newData);
+            history.push("/");
+        } catch (error) {
+            setErrors(error);
+        }
     };
+
     return (
         <form onSubmit={handleSubmit}>
             <TextField
@@ -98,39 +120,44 @@ const RegisterForm = () => {
                 error={errors.password}
             />
             <SelectField
-                label="Выберите вашу профессию"
-                onChange={handleChange}
-                options={professions}
+                label="Выбери свою профессию"
                 defaultOption="Choose..."
-                error={errors.profession}
+                options={professionsList}
+                name="profession"
+                onChange={handleChange}
                 value={data.profession}
-                name="professions"
+                error={errors.profession}
             />
             <RadioField
-                onChange={handleChange}
-                options={[{ name: "Male", value: "male" }, { name: "Female", value: "female" }, { name: "Other", value: "other" }]}
+                options={[
+                    { name: "Male", value: "male" },
+                    { name: "Female", value: "female" },
+                    { name: "Other", value: "other" }
+                ]}
                 value={data.sex}
                 name="sex"
+                onChange={handleChange}
                 label="Выберите ваш пол"
             />
             <MultiSelectField
-                options={qualities}
-                name="qualities"
+                options={qualitiesList}
                 onChange={handleChange}
-                label="Выберите ваши качества"
                 defaultValue={data.qualities}
+                name="qualities"
+                label="Выберите ваши качества"
             />
             <CheckBoxField
                 value={data.licence}
                 onChange={handleChange}
                 name="licence"
                 error={errors.licence}
-            >Подтвердить <a>лицензионное соглашение</a></CheckBoxField>
-
+            >
+                Подтвердить <a>лицензионное соглашение</a>
+            </CheckBoxField>
             <button
+                className="btn btn-primary w-100 mx-auto"
                 type="submit"
                 disabled={!isValid}
-                className="btn btn-primary w-100 mx-auto"
             >
                 Submit
             </button>
