@@ -3,12 +3,11 @@ import { validator } from "../../utils/validator";
 import TextField from "../common/form/textField";
 import CheckBoxField from "../common/form/checkBoxField";
 import { useHistory } from "react-router-dom";
-import { useLogin } from "../../hooks/useLogin";
+import { useAuth } from "../../hooks/useAuth";
 
 const LoginForm = () => {
-    console.log(process.env);
     const history = useHistory();
-    const { logIn } = useLogin();
+    const { logIn } = useAuth();
     const [data, setData] = useState({ email: "", password: "", stayOn: false });
     const [errors, setErrors] = useState({});
     const handleChange = (target) => {
