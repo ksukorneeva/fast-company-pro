@@ -6,8 +6,10 @@ import MainPage from "./layouts/mainPage";
 import Login from "./layouts/login";
 import { ToastContainer } from "react-toastify";
 import { ProfessionProvider } from "./hooks/useProfession";
-import { QualityProvider } from "./hooks/useQualities";
 import AuthProvider from "./hooks/useAuth";
+import ProtectedRoute from "./components/common/protectedRoute";
+import LogOut from "./layouts/logOut";
+import { QualitiesProvider } from "./hooks/useQualities";
 
 function App() {
     return (
@@ -16,14 +18,15 @@ function App() {
                 <AuthProvider>
                     <NavBar />
                     <ProfessionProvider>
-                        <QualityProvider>
+                        <QualitiesProvider>
                             <Switch>
-                                <Route path="/users/:userId?/:edit?" component={Users} />
+                                <ProtectedRoute path="/users/:userId?/:edit?" component={Users} />
                                 <Route path="/login/:type?" component={Login} />
+                                <Route path="/logout" component={LogOut}/>
                                 <Route path="/" exact component={MainPage} />
                                 <Redirect to="/" />
                             </Switch>
-                        </QualityProvider>
+                        </QualitiesProvider>
                     </ProfessionProvider>
                 </AuthProvider>
                 <ToastContainer/>
