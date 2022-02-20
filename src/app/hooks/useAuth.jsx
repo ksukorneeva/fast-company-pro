@@ -59,6 +59,31 @@ const AuthProvider = ({ children }) => {
         setUser(null);
         history.push("/");
     }
+    async function editUser({ email, idToken }) {
+        try {
+            const { data } = await httpAuth.post(
+                `accounts:update`,
+                {
+                    idToken,
+                    email,
+                    returnSecureToken: true
+                }
+            );
+            setTokens(data);
+        } catch (error) {
+            errorCatcher(error);
+            const { code, message } = error.response.data.error;
+            console.log(code, message);
+            if (code === 400) {
+                if (message === "EMAIL_EXISTS") {
+                    const errorObject = {
+                        email: "Пользователь с таким Email уже существует"
+                    };
+                    throw errorObject;
+                }
+            }
+        }
+    };
     function randomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
@@ -133,7 +158,7 @@ const AuthProvider = ({ children }) => {
         }
     }, [error]);
     return (
-        <AuthContext.Provider value={{ signUp, logIn, currentUser, logOut }}>
+        <AuthContext.Provider value={{ signUp, logIn, currentUser, logOut, editUser }}>
             {!isLoading ? children : "Loading..."}
         </AuthContext.Provider>
     );
