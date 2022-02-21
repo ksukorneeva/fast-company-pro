@@ -59,17 +59,10 @@ const AuthProvider = ({ children }) => {
         setUser(null);
         history.push("/");
     }
-    async function editUser({ email, idToken }) {
+    async function editUser(data) {
         try {
-            const { data } = await httpAuth.post(
-                `accounts:update`,
-                {
-                    idToken,
-                    email,
-                    returnSecureToken: true
-                }
-            );
             setTokens(data);
+            await updateCurrentUser(data);
         } catch (error) {
             errorCatcher(error);
             const { code, message } = error.response.data.error;
@@ -124,6 +117,15 @@ const AuthProvider = ({ children }) => {
     async function createUser(data) {
         try {
             const { content } = await userService.create(data);
+            console.log(content);
+            setUser(content);
+        } catch (error) {
+            errorCatcher(error);
+        }
+    }
+    async function updateCurrentUser(data) {
+        try {
+            const { content } = await userService.updateCurrentUser(data);
             console.log(content);
             setUser(content);
         } catch (error) {
