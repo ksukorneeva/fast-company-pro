@@ -59,22 +59,12 @@ const AuthProvider = ({ children }) => {
         setUser(null);
         history.push("/");
     }
-    async function editUser(data) {
+    async function updateUserData(data) {
         try {
-            setTokens(data);
-            await updateCurrentUser(data);
+            const { content } = await userService.update(data);
+            setUser(content);
         } catch (error) {
             errorCatcher(error);
-            const { code, message } = error.response.data.error;
-            console.log(code, message);
-            if (code === 400) {
-                if (message === "EMAIL_EXISTS") {
-                    const errorObject = {
-                        email: "Пользователь с таким Email уже существует"
-                    };
-                    throw errorObject;
-                }
-            }
         }
     };
     function randomInt(min, max) {
@@ -123,15 +113,6 @@ const AuthProvider = ({ children }) => {
             errorCatcher(error);
         }
     }
-    async function updateCurrentUser(data) {
-        try {
-            const { content } = await userService.updateCurrentUser(data);
-            console.log(content);
-            setUser(content);
-        } catch (error) {
-            errorCatcher(error);
-        }
-    }
     function errorCatcher(error) {
         const { message } = error.response.data;
         setError(message);
@@ -160,7 +141,7 @@ const AuthProvider = ({ children }) => {
         }
     }, [error]);
     return (
-        <AuthContext.Provider value={{ signUp, logIn, currentUser, logOut, editUser }}>
+        <AuthContext.Provider value={{ signUp, logIn, currentUser, logOut, updateUserData }}>
             {!isLoading ? children : "Loading..."}
         </AuthContext.Provider>
     );
