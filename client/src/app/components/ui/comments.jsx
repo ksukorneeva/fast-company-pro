@@ -3,7 +3,13 @@ import React, { useEffect } from "react";
 import CommentsList, { AddCommentForm } from "../common/comments";
 // import { useComments } from "../../hooks/useComments";
 import { useDispatch, useSelector } from "react-redux";
-import { createNewComment, getComments, getCommentsLoadingStatus, loadCommentsList, getRemoveComment } from "../../store/comments";
+import {
+    createNewComment,
+    getComments,
+    getCommentsLoadingStatus,
+    loadCommentsList,
+    getRemoveComment
+} from "../../store/comments";
 import { useParams } from "react-router-dom";
 import { getCurrentUserId } from "../../store/users";
 
@@ -13,13 +19,13 @@ const Comments = () => {
     useEffect(() => {
         dispatch(loadCommentsList(userId));
     }, [userId]);
-    const isLoading = useSelector(getCommentsLoadingStatus());
+    const ng = useSelector(getCommentsLoadingStatus());
     // const { removeComment } = useComments();
     const comments = useSelector(getComments());
     const currentUserId = useSelector(getCurrentUserId());
 
     const handleSubmit = (data) => {
-        dispatch(createNewComment(data, userId, currentUserId));
+        dispatch(createNewComment(...data, userId, currentUserId));
         // api.comments
         //     .add({ ...data, pageId: userId,  })
         //     .then((data) => setComments([...comments, data]));
@@ -43,13 +49,14 @@ const Comments = () => {
                     <div className="card-body ">
                         <h2>Comments</h2>
                         <hr />
-                        {!isLoading
-                            ? <CommentsList
+                        {!ng ? (
+                            <CommentsList
                                 comments={sortedComments}
                                 onRemove={handleRemoveComment}
                             />
-                            : "Loading... "
-                        }
+                        ) : (
+                            "Loading... "
+                        )}
                     </div>
                 </div>
             )}
